@@ -10,7 +10,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@EntityListeners(EntityUpdateListener.class)
 @Data
 @Table(name = "borrower_detail")
 public class BorrowerDetail {

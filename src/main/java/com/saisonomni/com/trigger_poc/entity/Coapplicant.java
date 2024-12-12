@@ -11,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import static java.util.Objects.isNull;
 
 @Entity
-@EntityListeners(EntityUpdateListener.class)
 @Data
 @Table(name = "coapplicant")
 public class Coapplicant {

@@ -13,7 +13,6 @@ import static java.util.Objects.isNull;
 
 @Entity
 @Table(name = "appform")
-@EntityListeners(EntityUpdateListener.class)
 @Data
 public class Appform {
     @Id
