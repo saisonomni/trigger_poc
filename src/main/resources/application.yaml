@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: trigger_poc
+  jpa:
+    enable: true
+    generate-ddl: true
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    enable: true
+    basePackages: com.saison.partner.data.postgres.repository
+    baseModel: com.saison.partner.data.postgres.entity
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5436/mydb
+    url: jdbc:postgresql://localhost:5436/mydb
+    username: aniket
+    password: aniket
+    platform: postgresql
+    generate-ddl: true
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+      default_schema: appform
+server:
+  port: 7777
