@@ -2,12 +2,12 @@ package com.saisonomni.com.trigger_poc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
-import com.saisonomni.com.trigger_poc.config.EntityUpdateListener;
-import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -26,7 +26,7 @@ public class BorrowerDetail {
     private Coapplicant coapplicant;
 
     @Column(name = "cibil", nullable = false)
-    @PublishEventOnUpdate(eventName = "field_updated_event",ref = {"BorrowerDetail.id","Coapplicant.id","Appform.id"})
+    @PublishEventOnUpdate(eventName = "field_updated_event",ref = {"id","coapplicant.id","coapplicant.appform.id"})
     private Integer cibil;
 
 }

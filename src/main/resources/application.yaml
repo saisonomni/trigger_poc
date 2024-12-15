@@ -24,5 +24,16 @@ spring:
     hibernate:
       ddl-auto: create-drop
       default_schema: appform
+service:
+  ehs:
+    url: "http://localhost:8088"
+    endpoint:
+      send: "/event-handling/event"
+      register: "/event-handling/registerConsumer"
+rabbit:
+  host: localhost
+  port: 5672
+  username: admin
+  password: admin
 server:
   port: 7777

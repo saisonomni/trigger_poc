@@ -1,12 +1,12 @@
 package com.saisonomni.com.trigger_poc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.saisonomni.com.trigger_poc.config.EntityUpdateListener;
-import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 
 import static java.util.Objects.isNull;
 

@@ -1,12 +1,10 @@
 package com.saisonomni.com.trigger_poc.entity;
 
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
-import com.saisonomni.com.trigger_poc.config.EntityUpdateListener;
-import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.lang.reflect.Field;
+import javax.persistence.*;
 import java.util.List;
 
 import static java.util.Objects.isNull;

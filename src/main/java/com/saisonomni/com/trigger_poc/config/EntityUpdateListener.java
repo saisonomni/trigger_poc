@@ -1,9 +1,6 @@
 package com.saisonomni.com.trigger_poc.config;
 
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
-import com.saisonomni.com.trigger_poc.entity.Appform;
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PostUpdate;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

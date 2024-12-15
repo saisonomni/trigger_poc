@@ -1,13 +1,11 @@
 package com.saisonomni.com.trigger_poc.config;
 
-import jakarta.annotation.PostConstruct;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.persistence.EntityManagerFactory;
+import javax.persistence.EntityManagerFactory;
 
 @Configuration
 public class HibernateListenerConfig {
