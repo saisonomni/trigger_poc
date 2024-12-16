@@ -16,7 +16,7 @@ public class Appform {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @PublishEventOnUpdate(eventName = "field_updated_event")
+    @PublishEventOnUpdate(eventName = "field_updated_event",keyName = "appformId")
     private String id;
 
     @OneToMany(mappedBy = "appform", cascade = CascadeType.ALL, targetEntity = Coapplicant.class)

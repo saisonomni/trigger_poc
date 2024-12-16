@@ -10,6 +10,6 @@ import java.util.Map;
 @Data
 public final class EventName {
     public static final Map<String, MessageCategory> EVENTS = ImmutableMap.<String,MessageCategory>builder()
-            .put("los.syncInit.appform.assignment.sync",MessageCategory.DIRECT)
+            .put("searchService.send",MessageCategory.DIRECT)
             .build();
 }

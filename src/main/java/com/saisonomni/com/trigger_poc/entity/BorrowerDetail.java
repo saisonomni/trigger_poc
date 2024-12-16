@@ -26,7 +26,9 @@ public class BorrowerDetail {
     private Coapplicant coapplicant;
 
     @Column(name = "cibil", nullable = false)
-    @PublishEventOnUpdate(eventName = "field_updated_event",ref = {"id","coapplicant.id","coapplicant.appform.id"})
+    @PublishEventOnUpdate(eventName = "field_updated_event",
+            keyName = "cibil",
+            ref = {"id","coapplicant.id","coapplicant.appform.id"})
     private Integer cibil;
 
 }
