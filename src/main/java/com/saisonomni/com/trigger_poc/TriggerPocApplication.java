@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import com.saison.omni.ehs.EhsClientListener;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.saisonomni.com.trigger_poc.event","com.saison.omni.ehs"})
+@ComponentScan(basePackages = {"com.saison.omni.ehs","com.saisonomni.com.trigger_poc"})
 @EnableAutoConfiguration(exclude = RabbitAutoConfiguration.class)
 public class TriggerPocApplication {
 	@Autowired
