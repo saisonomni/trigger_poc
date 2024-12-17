@@ -4,6 +4,7 @@ import com.saisonomni.com.trigger_poc.config.AppformMapper;
 import com.saisonomni.com.trigger_poc.config.EntityMapper;
 import com.saisonomni.com.trigger_poc.controller.request.AppformRequest;
 import com.saisonomni.com.trigger_poc.entity.Appform;
+import com.saisonomni.com.trigger_poc.entity.BREData;
 import com.saisonomni.com.trigger_poc.service.AppformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,11 @@ public class AppformController {
     public ResponseEntity<Appform> createAppForm(@RequestBody AppformRequest appForm) {
         Appform savedAppForm = appFormService.createAppForm(appformMapper.toEntity(appForm));
         return ResponseEntity.ok(savedAppForm);
+    }
+    @PostMapping("/api/breData")
+    public ResponseEntity<BREData> createAppForm(@RequestBody BREData breData) {
+        BREData breDataResponse = appFormService.createBREData(breData);
+        return ResponseEntity.ok(breDataResponse);
     }
 }
 

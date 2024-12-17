@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'com.saison.omni:ehs-client:0.1.2'
 	implementation 'com.saison.omni:platform-commons:1.0.0'
 	compileOnly 'com.saison.omni:platform-commons:1.0.0'
@@ -43,7 +44,6 @@ dependencies {
 	//rabbitMQ dependency
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
-
 //	implementation 'org.projectlombok:lombok:1.18.22'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

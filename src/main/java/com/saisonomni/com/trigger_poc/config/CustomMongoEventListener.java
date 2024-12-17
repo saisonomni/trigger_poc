@@ -7,9 +7,9 @@ import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
-import org.hibernate.event.spi.PostInsertEvent;
-import org.hibernate.event.spi.PostInsertEventListener;
-import org.hibernate.persister.entity.EntityPersister;
+import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
+import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,12 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+@Component
 @Slf4j
-public class GlobalEntityListener implements PostInsertEventListener {
+public class CustomMongoEventListener extends AbstractMongoEventListener<Object> {
 
     @Override
-    public void onPostInsert(PostInsertEvent event) {
-        Object entity = event.getEntity();
+    public void onBeforeSave(BeforeSaveEvent<Object> event) {
+        Object entity = event.getSource();
         Class<?> entityClass = entity.getClass();
         JSONObject jsonObject = new JSONObject();
         for (Field field : entityClass.getDeclaredFields()) {
@@ -87,15 +88,5 @@ public class GlobalEntityListener implements PostInsertEventListener {
             log.error(e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
         }
-    }
-
-    @Override
-    public boolean requiresPostCommitHanding(EntityPersister persister) {
-        return false;
-    }
-
-    @Override
-    public boolean requiresPostCommitHandling(EntityPersister persister) {
-        return false;
     }
 }

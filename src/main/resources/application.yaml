@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding : true
   application:
     name: trigger_poc
   jpa:
@@ -8,6 +10,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  data:
+    mongodb:
+      uri: mongodb://omni:omni@localhost:27018/?directConnection=true&authSource=omni
+      database: omni
   datasource:
     enable: true
     basePackages: com.saison.partner.data.postgres.repository
