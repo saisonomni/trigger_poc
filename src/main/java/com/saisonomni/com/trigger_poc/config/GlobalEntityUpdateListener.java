@@ -2,6 +2,7 @@ package com.saisonomni.com.trigger_poc.config;
 
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
@@ -40,6 +41,7 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         Object entity = event.getEntity();
         Class<?> entityClass = entity.getClass();
         log.info("Entering post delete listener");
+        JSONObject jsonObject = new JSONObject();
         /*
         Handle soft deletes
         * */
@@ -57,7 +59,11 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         if(fieldList.size()>0){
             // publish the payload with type DELETE
             //and return
+            jsonObject.put("PAYLOAD_TYPES","DELETE");
             return;
+        }
+        else{
+            jsonObject.put("PAYLOAD_TYPES","UPDATE");
         }
     }
 }

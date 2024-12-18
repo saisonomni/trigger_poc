@@ -66,6 +66,7 @@ public class GlobalEntityListener implements PostInsertEventListener {
                 }
             }
         }
+        jsonObject.put("PAYLOAD_TYPE","INSERT");
         sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,
