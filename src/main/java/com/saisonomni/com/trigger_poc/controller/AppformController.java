@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 public class AppformController {
     @Autowired
@@ -25,6 +27,11 @@ public class AppformController {
     public ResponseEntity<BREData> createAppForm(@RequestBody BREData breData) {
         BREData breDataResponse = appFormService.createBREData(breData);
         return ResponseEntity.ok(breDataResponse);
+    }
+    @DeleteMapping("/api/deleteAppforms")
+    public ResponseEntity<String> deleteAppforms(@RequestParam String appformId){
+        appFormService.deleteApppform(appformId);
+        return ResponseEntity.ok("Deleted");
     }
 }
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
+import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -13,10 +14,8 @@ import org.hibernate.persister.entity.EntityPersister;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class GlobalEntityListener implements PostInsertEventListener {

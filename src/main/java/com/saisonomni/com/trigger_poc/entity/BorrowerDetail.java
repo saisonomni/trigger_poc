@@ -1,6 +1,7 @@
 package com.saisonomni.com.trigger_poc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,6 +31,12 @@ public class BorrowerDetail {
             keyName = "cibil",
             ref = {"id","coapplicant.id","coapplicant.appform.id"})
     private Integer cibil;
+
+    @Column(name = "is_deleted", nullable = false)
+    @PublishEventOnDelete(eventName = "field_updated_event",
+            keyName = "cibil",
+            ref = {"id","coapplicant.id","coapplicant.appform.id"},deletedValue = "true")
+    private boolean is_deleted;
 
 }
 

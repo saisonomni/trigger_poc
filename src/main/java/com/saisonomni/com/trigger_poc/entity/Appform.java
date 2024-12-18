@@ -1,5 +1,6 @@
 package com.saisonomni.com.trigger_poc.entity;
 
+import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,6 +25,10 @@ public class Appform {
 
     @Column(name = "sanctioned_amount", nullable = false)
     private int sanctionedAmount;
+
+    @PublishEventOnDelete(eventName = "field_updated_event",keyName = "appformId",deletedValue = "true")
+    @Column(name = "is_deleted",nullable = false)
+    private boolean isDeleted;
 
     public void setCoapplicants(List<Coapplicant> coapplicants){
         for(Coapplicant coapplicant : coapplicants){

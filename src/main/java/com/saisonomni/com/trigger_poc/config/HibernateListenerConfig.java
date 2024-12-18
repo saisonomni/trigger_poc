@@ -18,5 +18,7 @@ public class HibernateListenerConfig {
         // Register the custom listener for PreInsert and PreUpdate events
         GlobalEntityListener globalListener = new GlobalEntityListener();
         registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(globalListener);
+        registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(new GlobalEntityDeleteListener());
+        registry.getEventListenerGroup(EventType.MERGE).appendListener(new GlobalEntityUpdateListener());
     }
 }
