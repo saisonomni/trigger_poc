@@ -17,9 +17,9 @@ public class BREData {
     @Id
     private String id;
     @Field("loan_applicant_id")
-    @PublishEventOnUpdate(eventName = "field_updated_event",keyName = "appformId")
+    @PublishEventOnUpdate(eventName = "cibilFilter",keyName = "appformId")
     String loanApplicantId;
     @Field("success_percentage")
-    @PublishEventOnUpdate(eventName = "field_updated_event",keyName = "breMatchPercentage")
+    @PublishEventOnUpdate(eventName = "cibilFilter",keyName = "breMatchPercentage")
     double successPercentage;
 }
