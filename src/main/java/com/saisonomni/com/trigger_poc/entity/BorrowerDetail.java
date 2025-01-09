@@ -29,13 +29,15 @@ public class BorrowerDetail {
     @Column(name = "cibil", nullable = false)
     @PublishEventOnUpdate(eventName = "field_updated_event",
             keyName = "cibil",
-            ref = {"id","coapplicant.id","coapplicant.appform.id"})
+            path = "appform.coapplicants.borrowerDetail.cibil",//values used here are the field names used in datastore
+            ref = {"id","coapplicant.id","coapplicant.appform.id"})//names used in refs are field name used in dto
     private Integer cibil;
 
     @Column(name = "is_deleted", nullable = false)
     @PublishEventOnDelete(eventName = "field_updated_event",
             keyName = "cibil",
-            ref = {"id","coapplicant.id","coapplicant.appform.id"},deletedValue = "true")
+            ref = {"id","coapplicant.id","coapplicant.appform.id"},
+            deletedValue = "true")
     private boolean is_deleted;
 
 }

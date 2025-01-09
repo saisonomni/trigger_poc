@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
-import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -25,8 +24,10 @@ public class GlobalEntityListener implements PostInsertEventListener {
         Object entity = event.getEntity();
         Class<?> entityClass = entity.getClass();
         JSONObject jsonObject = new JSONObject();
+        boolean annotationPresent = false;
         for (Field field : entityClass.getDeclaredFields()) {
             if (field.isAnnotationPresent(PublishEventOnUpdate.class)) {
+                annotationPresent = true;
                 field.setAccessible(true);
                 try {
                     PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
@@ -66,8 +67,10 @@ public class GlobalEntityListener implements PostInsertEventListener {
                 }
             }
         }
-        jsonObject.put("PAYLOAD_TYPE","INSERT");
-        sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
+        if(annotationPresent){
+            jsonObject.put("PAYLOAD_TYPE","INSERT");
+            sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
+        }
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,
                                  String eventType, String destination) {

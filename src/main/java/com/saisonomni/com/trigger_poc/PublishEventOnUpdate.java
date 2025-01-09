@@ -10,6 +10,7 @@ import java.util.List;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PublishEventOnUpdate {
     String eventName();
+    String path();
     String keyName();
     String[] ref() default {};
 }
