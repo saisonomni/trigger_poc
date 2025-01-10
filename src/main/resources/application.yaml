@@ -1,3 +1,7 @@
+hibernate:
+  event:
+    listener:
+      enabled: false
 spring:
   main:
     allow-bean-definition-overriding : true

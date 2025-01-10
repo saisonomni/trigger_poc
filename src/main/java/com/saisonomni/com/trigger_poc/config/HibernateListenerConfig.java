@@ -3,11 +3,13 @@ package com.saisonomni.com.trigger_poc.config;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
+@ConditionalOnProperty(prefix = "hibernate.event.listener", name = "enabled", havingValue = "true")
 public class HibernateListenerConfig {
 
     public HibernateListenerConfig(EntityManagerFactory entityManagerFactory) {
