@@ -5,46 +5,59 @@ import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
+import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
-public class GlobalEntityListener implements PostInsertEventListener {
+@Component
+public class GlobalEntityInsertListener implements PostInsertEventListener {
+    @Value("${hibernate.event.listener.classes}")
+    List<String> allowedEntities;
 
     @Override
     public void onPostInsert(PostInsertEvent event) {
         Object entity = event.getEntity();
         Class<?> entityClass = entity.getClass();
+        if (!allowedEntities.contains(entityClass.getName())) {
+            return;
+        }
         JSONObject jsonObject = new JSONObject();
         boolean annotationPresent = false;
+        List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
         for (Field field : entityClass.getDeclaredFields()) {
             if (field.isAnnotationPresent(PublishEventOnUpdate.class)) {
                 annotationPresent = true;
                 field.setAccessible(true);
                 try {
+                    UpsertValueDTO upsertValueDTO = UpsertValueDTO.builder()
+                            .build();
                     PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
                     try {
                         field.setAccessible(true);
                         jsonObject.put(annotation.keyName(), field.get(entity).toString());
-                        jsonObject.put("indexName",annotation.eventName());
+                        upsertValueDTO.setDataPairs((Map<String, Object>) new HashMap<>().put(annotation.keyName(), field.get(entity)));
+                        jsonObject.put("searchIndex", annotation.eventName());
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
-                    if (annotation.ref().length > 0){
-                        for(int i=0;i<annotation.ref().length;i++){
+                    if (annotation.ref().length > 0) {
+                        List<String> refIdList = new ArrayList<>();
+                        for (int i = 0; i < annotation.ref().length; i++) {
                             String path = annotation.ref()[i];
                             Object tempEntity = entity;
-                            StringTokenizer stringTokenizer = new StringTokenizer(path,".");
+                            StringTokenizer stringTokenizer = new StringTokenizer(path, ".");
                             Class returnTypeClass = entityClass;
-                            while(stringTokenizer.hasMoreTokens()) {
+                            while (stringTokenizer.hasMoreTokens()) {
                                 String token = stringTokenizer.nextToken();
                                 String methodName = "get" + token.substring(0, 1).toUpperCase() + token.substring(1);
                                 Method method = null;
@@ -59,17 +72,20 @@ public class GlobalEntityListener implements PostInsertEventListener {
                                 }
                                 returnTypeClass = method.getReturnType();
                             }
-                            jsonObject.put("this."+path, tempEntity.toString());
+                            refIdList.add(tempEntity.toString());
+                            upsertValueDTO.setRef(refIdList);
                         }
                     }
+                    upsertValueDTO.setPath(annotation.path());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        if(annotationPresent){
-            jsonObject.put("PAYLOAD_TYPE","INSERT");
-            sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
+        if (annotationPresent) {
+            jsonObject.put("operation", "UPSERT");
+            jsonObject.put("value",upsertValueDTOList);
+            sendEventUtility(jsonObject, MessageCategory.DIRECT, "kuch bhi", "searchService.send", "internal");
         }
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,
