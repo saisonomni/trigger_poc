@@ -1,12 +1,7 @@
 hibernate:
   event:
     listener:
-      enabled: false
-      classes:
-        -Appform
-        -BorrowerDetail
-        -BREData
-        -Coapplicant
+      enabled: true
 spring:
   main:
     allow-bean-definition-overriding : true

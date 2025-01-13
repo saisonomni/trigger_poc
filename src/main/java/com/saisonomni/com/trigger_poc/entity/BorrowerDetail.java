@@ -1,6 +1,7 @@
 package com.saisonomni.com.trigger_poc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "borrower_detail")
+@CDCEntity
 public class BorrowerDetail {
     @Id
     @GeneratedValue(generator = "uuid")

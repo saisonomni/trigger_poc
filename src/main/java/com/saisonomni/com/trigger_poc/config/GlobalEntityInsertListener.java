@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
+import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import net.minidev.json.JSONObject;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -21,16 +21,14 @@ import java.util.*;
 @Slf4j
 @Component
 public class GlobalEntityInsertListener implements PostInsertEventListener {
-    @Value("${hibernate.event.listener.classes}")
-    List<String> allowedEntities;
 
     @Override
     public void onPostInsert(PostInsertEvent event) {
         Object entity = event.getEntity();
-        Class<?> entityClass = entity.getClass();
-        if (!allowedEntities.contains(entityClass.getName())) {
+        if(!entity.getClass().isAnnotationPresent(CDCEntity.class)){
             return;
         }
+        Class<?> entityClass = entity.getClass();
         JSONObject jsonObject = new JSONObject();
         boolean annotationPresent = false;
         List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
@@ -44,8 +42,9 @@ public class GlobalEntityInsertListener implements PostInsertEventListener {
                     PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
                     try {
                         field.setAccessible(true);
-                        jsonObject.put(annotation.keyName(), field.get(entity).toString());
-                        upsertValueDTO.setDataPairs((Map<String, Object>) new HashMap<>().put(annotation.keyName(), field.get(entity)));
+                        Map<String, Object> dataPairMap =  new HashMap<>();
+                        dataPairMap.put(annotation.keyName(), field.get(entity).toString());
+                        upsertValueDTO.setDataPairs(dataPairMap);
                         jsonObject.put("searchIndex", annotation.eventName());
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
@@ -77,6 +76,7 @@ public class GlobalEntityInsertListener implements PostInsertEventListener {
                         }
                     }
                     upsertValueDTO.setPath(annotation.path());
+                    upsertValueDTOList.add(upsertValueDTO);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

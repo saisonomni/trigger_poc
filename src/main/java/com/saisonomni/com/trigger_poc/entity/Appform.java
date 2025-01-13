@@ -1,5 +1,6 @@
 package com.saisonomni.com.trigger_poc.entity;
 
+import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
 import lombok.Data;
@@ -13,6 +14,7 @@ import static java.util.Objects.isNull;
 @Entity
 @Table(name = "appform")
 @Data
+@CDCEntity
 public class Appform {
     @Id
     @GeneratedValue(generator = "uuid")
