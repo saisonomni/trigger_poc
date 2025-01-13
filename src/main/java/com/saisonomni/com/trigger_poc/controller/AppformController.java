@@ -33,6 +33,11 @@ public class AppformController {
         appFormService.deleteApppform(appformId);
         return ResponseEntity.ok("Deleted");
     }
+    @DeleteMapping("/api/hardDeleteAppforms")
+    public ResponseEntity<String> hardDeleteAppforms(@RequestParam String appformId){
+        appFormService.deleteApppform(appformId);
+        return ResponseEntity.ok("Hard Deleted");
+    }
     @PutMapping("/api/updateBorrower")
     public ResponseEntity<String> deleteAppforms(@RequestParam String borrowerId,@RequestParam int cibil){
         appFormService.updateBorrower(borrowerId,cibil);
