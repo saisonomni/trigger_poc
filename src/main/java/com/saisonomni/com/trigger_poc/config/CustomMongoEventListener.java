@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
-import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
+import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
@@ -28,10 +28,10 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
         Class<?> entityClass = entity.getClass();
         JSONObject jsonObject = new JSONObject();
         for (Field field : entityClass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(PublishEventOnUpdate.class)) {
+            if (field.isAnnotationPresent(PublishEventOnUpsert.class)) {
                 field.setAccessible(true);
                 try {
-                    PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
+                    PublishEventOnUpsert annotation = field.getAnnotation(PublishEventOnUpsert.class);
                     try {
                         field.setAccessible(true);
                         jsonObject.put(annotation.keyName(), field.get(entity).toString());

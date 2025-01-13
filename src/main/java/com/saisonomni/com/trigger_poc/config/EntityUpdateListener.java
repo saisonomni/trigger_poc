@@ -1,6 +1,6 @@
 package com.saisonomni.com.trigger_poc.config;
 
-import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
+import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +12,10 @@ public class EntityUpdateListener {
     public void postUpdate(Object entity) {
         Class<?> entityClass = entity.getClass();
         for (Field field : entityClass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(PublishEventOnUpdate.class)) {
+            if (field.isAnnotationPresent(PublishEventOnUpsert.class)) {
                 field.setAccessible(true);
                 try {
-                    PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
+                    PublishEventOnUpsert annotation = field.getAnnotation(PublishEventOnUpsert.class);
                     // Extract the field value (if needed, e.g., for comparison)
                     Object value = field.get(entity);
                     //check if there is any ref attached to the annotation (annotation.ref)

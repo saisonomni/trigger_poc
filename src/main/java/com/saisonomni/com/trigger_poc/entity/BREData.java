@@ -1,7 +1,7 @@
 package com.saisonomni.com.trigger_poc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
+import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -17,9 +17,9 @@ public class BREData {
     @Id
     private String id;
     @Field("loan_applicant_id")
-    @PublishEventOnUpdate(eventName = "cibilFilter",keyName = "appformId",path = "#")
+    @PublishEventOnUpsert(eventName = "cibilFilter",keyName = "appformId",path = "#")
     String loanApplicantId;
     @Field("success_percentage")
-    @PublishEventOnUpdate(eventName = "cibilFilter",keyName = "breMatchPercentage",path = "#")
+    @PublishEventOnUpsert(eventName = "cibilFilter",keyName = "breMatchPercentage",path = "#")
     double successPercentage;
 }

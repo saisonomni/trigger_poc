@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface PublishEventOnDelete {
     String eventName();
     String keyName();
+    String path();
     String deletedValue();
     String[] ref() default {};
 }

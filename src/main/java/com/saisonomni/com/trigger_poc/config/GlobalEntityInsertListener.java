@@ -5,7 +5,7 @@ import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.CDCEntity;
-import com.saisonomni.com.trigger_poc.PublishEventOnUpdate;
+import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -33,13 +33,13 @@ public class GlobalEntityInsertListener implements PostInsertEventListener {
         boolean annotationPresent = false;
         List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
         for (Field field : entityClass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(PublishEventOnUpdate.class)) {
+            if (field.isAnnotationPresent(PublishEventOnUpsert.class)) {
                 annotationPresent = true;
                 field.setAccessible(true);
                 try {
                     UpsertValueDTO upsertValueDTO = UpsertValueDTO.builder()
                             .build();
-                    PublishEventOnUpdate annotation = field.getAnnotation(PublishEventOnUpdate.class);
+                    PublishEventOnUpsert annotation = field.getAnnotation(PublishEventOnUpsert.class);
                     try {
                         field.setAccessible(true);
                         Map<String, Object> dataPairMap =  new HashMap<>();
@@ -72,6 +72,7 @@ public class GlobalEntityInsertListener implements PostInsertEventListener {
                                 returnTypeClass = method.getReturnType();
                             }
                             refIdList.add(tempEntity.toString());
+                            Collections.reverse(refIdList);
                             upsertValueDTO.setRef(refIdList);
                         }
                     }

@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
+import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
+import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.hibernate.HibernateException;
@@ -31,11 +33,15 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
     }
     private void helper(MergeEvent event){
         Object entity = event.getEntity();
+        if(!entity.getClass().isAnnotationPresent(CDCEntity.class)){
+            return;
+        }
         Class<?> entityClass = entity.getClass();
         log.info("Entering post delete listener");
         JSONObject jsonObject = new JSONObject();
+
         /*
-        Handle soft deletes
+        Check if the entity is being soft deleted
         * */
         List<Field> fieldList = Arrays.stream(entityClass.getDeclaredFields()).filter(field -> field.isAnnotationPresent(PublishEventOnDelete.class))
                 .collect(Collectors.toList());
@@ -52,7 +58,12 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             // publish the payload with type DELETE
             //and return
             PublishEventOnDelete annotation = fieldList.get(0).getAnnotation(PublishEventOnDelete.class);
+            jsonObject.put("searchIndex", annotation.eventName());
+            List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
+            UpsertValueDTO upsertValueDTO = UpsertValueDTO.builder()
+                    .build();
             if (annotation.ref().length > 0){
+                List<String> refIdList = new ArrayList<>();
                 for(int i=0;i<annotation.ref().length;i++){
                     String path = annotation.ref()[i];
                     Object tempEntity = entity;
@@ -76,16 +87,18 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                     if(path.compareToIgnoreCase("id")==0){
                         jsonObject.put(entityClass.getAnnotation(Table.class).name()+"#"+path,tempEntity.toString());
                     }
-                    else {
-                        jsonObject.put("this."+path, tempEntity.toString());
-                    }
+                    Collections.reverse(refIdList);
+                    upsertValueDTO.setRef(refIdList);
+                    upsertValueDTO.setPath(annotation.path());
                 }
             }
-            jsonObject.put("PAYLOAD_TYPES","DELETE");
+            upsertValueDTOList.add(upsertValueDTO);
+            jsonObject.put("operation","DELETE");
+            jsonObject.put("value",upsertValueDTOList);
             sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
         }
         else{
-            jsonObject.put("PAYLOAD_TYPES","UPDATE");
+            jsonObject.put("operation","UPDATE");
         }
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,
