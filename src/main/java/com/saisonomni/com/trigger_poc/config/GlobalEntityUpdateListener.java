@@ -51,7 +51,6 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         Class<?> entityClass = entity.getClass();
         log.info("Entering post delete listener");
         JSONObject jsonObject = new JSONObject();
-
         /*
         Check if the entity is being soft deleted
         * */
@@ -66,7 +65,6 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
-
         if(fieldList.size()==1){
             // publish the payload with type DELETE
             //and return
@@ -117,7 +115,7 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
         }
         else{
-            jsonObject.put("operation","UPDATE");
+            HibernateUpsertUtility.helper(entity);
         }
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,
