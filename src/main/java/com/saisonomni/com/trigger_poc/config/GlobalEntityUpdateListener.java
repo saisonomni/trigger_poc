@@ -24,14 +24,22 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-        helper(event);
+        try {
+            helper(event);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
-        helper(event);
+        try {
+            helper(event);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
-    private void helper(MergeEvent event){
+    private void helper(MergeEvent event) throws IllegalAccessException {
         Object entity = event.getEntity();
         if(!entity.getClass().isAnnotationPresent(CDCEntity.class)){
             return;
@@ -54,7 +62,7 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             }
         }).collect(Collectors.toList());
 
-        if(fieldList.size()>0){
+        if(fieldList.size()==1){
             // publish the payload with type DELETE
             //and return
             PublishEventOnDelete annotation = fieldList.get(0).getAnnotation(PublishEventOnDelete.class);
@@ -66,6 +74,12 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                 List<String> refIdList = new ArrayList<>();
                 for(int i=0;i<annotation.ref().length;i++){
                     String path = annotation.ref()[i];
+                    if(path.compareToIgnoreCase("#")==0){
+                        refIdList.add(fieldList.get(0).get(entity).toString());
+                        upsertValueDTO.setRef(refIdList);
+                        upsertValueDTO.setPath(annotation.path());
+                        continue;
+                    }
                     Object tempEntity = entity;
                     StringTokenizer stringTokenizer = new StringTokenizer(path,".");
                     Class returnTypeClass = entityClass;
