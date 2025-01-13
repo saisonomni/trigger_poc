@@ -28,6 +28,8 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             helper(event);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -37,9 +39,11 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             helper(event);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
     }
-    private void helper(MergeEvent event) throws IllegalAccessException {
+    private void helper(MergeEvent event) throws IllegalAccessException, NoSuchFieldException {
         Object entity = event.getEntity();
         if(!entity.getClass().isAnnotationPresent(CDCEntity.class)){
             return;
@@ -51,7 +55,8 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         /*
         Check if the entity is being soft deleted
         * */
-        List<Field> fieldList = Arrays.stream(entityClass.getDeclaredFields()).filter(field -> field.isAnnotationPresent(PublishEventOnDelete.class))
+        List<Field> fieldList = Arrays.stream(entityClass.getDeclaredFields()).filter(field ->
+                        field.isAnnotationPresent(PublishEventOnDelete.class))
                 .collect(Collectors.toList());
         fieldList.stream().filter(field -> {
             field.setAccessible(true);
@@ -75,7 +80,8 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                 for(int i=0;i<annotation.ref().length;i++){
                     String path = annotation.ref()[i];
                     if(path.compareToIgnoreCase("#")==0){
-                        refIdList.add(fieldList.get(0).get(entity).toString());
+                        Field idKey = entityClass.getDeclaredField(annotation.primaryKeyName());
+                        refIdList.add(idKey.get(entity).toString());
                         upsertValueDTO.setRef(refIdList);
                         upsertValueDTO.setPath(annotation.path());
                         continue;
@@ -98,13 +104,11 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                         }
                         returnTypeClass = method.getReturnType();
                     }
-                    if(path.compareToIgnoreCase("id")==0){
-                        jsonObject.put(entityClass.getAnnotation(Table.class).name()+"#"+path,tempEntity.toString());
-                    }
-                    Collections.reverse(refIdList);
-                    upsertValueDTO.setRef(refIdList);
-                    upsertValueDTO.setPath(annotation.path());
+                    refIdList.add(tempEntity.toString());
                 }
+                Collections.reverse(refIdList);
+                upsertValueDTO.setRef(refIdList);
+                upsertValueDTO.setPath(annotation.path());
             }
             upsertValueDTOList.add(upsertValueDTO);
             jsonObject.put("operation","DELETE");

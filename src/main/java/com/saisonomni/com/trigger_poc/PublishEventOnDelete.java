@@ -11,6 +11,7 @@ public @interface PublishEventOnDelete {
     String eventName();
     String keyName();
     String path();
+    String primaryKeyName() ;
     String deletedValue();
     String[] ref() default {};
 }

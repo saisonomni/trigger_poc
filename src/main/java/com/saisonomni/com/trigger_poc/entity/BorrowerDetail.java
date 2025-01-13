@@ -38,6 +38,7 @@ public class BorrowerDetail {
     @Column(name = "is_deleted", nullable = false)
     @PublishEventOnDelete(eventName = "field_updated_event",
             keyName = "cibil",
+            primaryKeyName = "id",
             ref = {"id","coapplicant.id","coapplicant.appform.id"},//values used here are the field names used in datastore
             path = "appform.coapplicants^.borrowerDetail",//names used in refs are field name used in dto
             deletedValue = "true")

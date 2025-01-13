@@ -19,7 +19,9 @@ public class Appform {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @PublishEventOnUpsert(eventName = "field_updated_event",keyName = "appformId",path = "#")
+    @PublishEventOnUpsert(eventName = "field_updated_event",
+            keyName = "appformId",
+            path = "#")
     private String id;
 
     @OneToMany(mappedBy = "appform", cascade = CascadeType.ALL, targetEntity = Coapplicant.class)
@@ -28,7 +30,12 @@ public class Appform {
     @Column(name = "sanctioned_amount", nullable = false)
     private int sanctionedAmount;
 
-    @PublishEventOnDelete(eventName = "field_updated_event",keyName = "appformId",deletedValue = "true",path = "#",ref = {"#"})
+    @PublishEventOnDelete(eventName = "field_updated_event",
+            keyName = "appformId",
+            deletedValue = "true",
+            primaryKeyName = "id",
+            path = "#",
+            ref = {"#"})
     @Column(name = "is_deleted",nullable = false)
     private boolean isDeleted;
 
