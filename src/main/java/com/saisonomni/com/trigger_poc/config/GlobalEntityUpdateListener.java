@@ -68,73 +68,10 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         if(fieldList.size()==1){
             // publish the payload with type DELETE
             //and return
-            PublishEventOnDelete annotation = fieldList.get(0).getAnnotation(PublishEventOnDelete.class);
-            jsonObject.put("searchIndex", annotation.eventName());
-            List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
-            UpsertValueDTO upsertValueDTO = UpsertValueDTO.builder()
-                    .build();
-            if (annotation.ref().length > 0){
-                List<String> refIdList = new ArrayList<>();
-                for(int i=0;i<annotation.ref().length;i++){
-                    String path = annotation.ref()[i];
-                    if(path.compareToIgnoreCase("#")==0){
-                        Field idKey = entityClass.getDeclaredField(annotation.primaryKeyName());
-                        idKey.setAccessible(true);
-                        refIdList.add(idKey.get(entity).toString());
-                        upsertValueDTO.setRef(refIdList);
-                        upsertValueDTO.setPath(annotation.path());
-                        continue;
-                    }
-                    Object tempEntity = entity;
-                    StringTokenizer stringTokenizer = new StringTokenizer(path,".");
-                    Class returnTypeClass = entityClass;
-                    while(stringTokenizer.hasMoreTokens()) {
-                        String token = stringTokenizer.nextToken();
-                        String methodName = "get" + token.substring(0, 1).toUpperCase() + token.substring(1);
-                        Method method = null;
-                        try {
-                            method = returnTypeClass.getMethod(methodName);
-                            Object result = method.invoke(tempEntity);
-                            tempEntity = result;
-                        } catch (NoSuchMethodException e) {
-                            System.out.println("no such method");
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        returnTypeClass = method.getReturnType();
-                    }
-                    refIdList.add(tempEntity.toString());
-                }
-                Collections.reverse(refIdList);
-                upsertValueDTO.setRef(refIdList);
-                upsertValueDTO.setPath(annotation.path());
+            HibernateOperationsUtility.deleteHelper(entity,fieldList);
             }
-            upsertValueDTOList.add(upsertValueDTO);
-            jsonObject.put("operation","DELETE");
-            jsonObject.put("value",upsertValueDTOList);
-            sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
-        }
         else{
             HibernateOperationsUtility.upsertHelper(entity);
-        }
-    }
-    public void sendEventUtility(Object object, MessageCategory category, String serviceName,
-                                 String eventType, String destination) {
-        try {
-            Gson gson = new Gson();
-            String eventUrl = "http://localhost:8088";
-            String applicationName = "trigger_poc";
-            EhsHelper ehsHelper = new EhsHelper(eventUrl, applicationName);
-            Map<String, Object> attributes = new HashMap<>(4);
-            attributes.put(EventConstants.EVENT_METADATA_EVENT_TYPE, eventType);
-            attributes.put(EventConstants.EVENT_METADATA_SOURCE,serviceName);
-            attributes.put(EventConstants.REG_METADATA_MESSAGE_TYPE,category);
-            attributes.put(EventConstants.PAYLOAD_METADATA_DESTINATION,destination);
-            log.info("sending event: {}, eventType: {}, destination: {}, eventUrl: {}", object, eventType, destination, eventUrl);
-            ehsHelper.sendEvent(gson.toJson(object),attributes);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
-            log.error(Arrays.toString(e.getStackTrace()));
         }
     }
 }

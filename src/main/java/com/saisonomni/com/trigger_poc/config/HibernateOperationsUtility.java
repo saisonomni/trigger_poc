@@ -5,6 +5,7 @@ import com.saison.omni.ehs.EhsHelper;
 import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.CDCEntity;
+import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
 import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -80,8 +81,54 @@ public class HibernateOperationsUtility {
             sendEventUtility(jsonObject, MessageCategory.DIRECT, "kuch bhi", "searchService.send", "internal");
         }
     }
-    public static void deleteHelper(Object entity){
-
+    public static void deleteHelper(Object entity, List<Field> fieldList) throws NoSuchFieldException, IllegalAccessException {
+        JSONObject jsonObject = new JSONObject();
+        Class<?> entityClass = entity.getClass();
+        PublishEventOnDelete annotation = fieldList.get(0).getAnnotation(PublishEventOnDelete.class);
+        jsonObject.put("searchIndex", annotation.eventName());
+        List<UpsertValueDTO> upsertValueDTOList = new ArrayList<>();
+        UpsertValueDTO upsertValueDTO = UpsertValueDTO.builder()
+                .build();
+        if (annotation.ref().length > 0){
+            List<String> refIdList = new ArrayList<>();
+            for(int i=0;i<annotation.ref().length;i++){
+                String path = annotation.ref()[i];
+                if(path.compareToIgnoreCase("#")==0){
+                    Field idKey = entityClass.getDeclaredField(annotation.primaryKeyName());
+                    idKey.setAccessible(true);
+                    refIdList.add(idKey.get(entity).toString());
+                    upsertValueDTO.setRef(refIdList);
+                    upsertValueDTO.setPath(annotation.path());
+                    continue;
+                }
+                Object tempEntity = entity;
+                StringTokenizer stringTokenizer = new StringTokenizer(path,".");
+                Class returnTypeClass = entityClass;
+                while(stringTokenizer.hasMoreTokens()) {
+                    String token = stringTokenizer.nextToken();
+                    String methodName = "get" + token.substring(0, 1).toUpperCase() + token.substring(1);
+                    Method method = null;
+                    try {
+                        method = returnTypeClass.getMethod(methodName);
+                        Object result = method.invoke(tempEntity);
+                        tempEntity = result;
+                    } catch (NoSuchMethodException e) {
+                        System.out.println("no such method");
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    returnTypeClass = method.getReturnType();
+                }
+                refIdList.add(tempEntity.toString());
+            }
+            Collections.reverse(refIdList);
+            upsertValueDTO.setRef(refIdList);
+            upsertValueDTO.setPath(annotation.path());
+        }
+        upsertValueDTOList.add(upsertValueDTO);
+        jsonObject.put("operation","DELETE");
+        jsonObject.put("value",upsertValueDTOList);
+        sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
     }
     public static void sendEventUtility(Object object, MessageCategory category, String serviceName,
                                  String eventType, String destination) {
