@@ -14,8 +14,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 @Slf4j
-public class HibernateUpsertUtility {
-    public static void helper(Object entity){
+public class HibernateOperationsUtility {
+    public static void upsertHelper(Object entity){
         if(!entity.getClass().isAnnotationPresent(CDCEntity.class)){
             return;
         }
@@ -79,6 +79,9 @@ public class HibernateUpsertUtility {
             jsonObject.put("value",upsertValueDTOList);
             sendEventUtility(jsonObject, MessageCategory.DIRECT, "kuch bhi", "searchService.send", "internal");
         }
+    }
+    public static void deleteHelper(Object entity){
+
     }
     public static void sendEventUtility(Object object, MessageCategory category, String serviceName,
                                  String eventType, String destination) {

@@ -6,7 +6,6 @@ import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
-import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -14,7 +13,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
-import javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -117,7 +115,7 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
             sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
         }
         else{
-            HibernateUpsertUtility.helper(entity);
+            HibernateOperationsUtility.upsertHelper(entity);
         }
     }
     public void sendEventUtility(Object object, MessageCategory category, String serviceName,

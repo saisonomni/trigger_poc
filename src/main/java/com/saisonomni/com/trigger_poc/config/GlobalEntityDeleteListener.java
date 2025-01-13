@@ -9,6 +9,9 @@ public class GlobalEntityDeleteListener implements PostDeleteEventListener {
     @Override
     public void onPostDelete(PostDeleteEvent event) {
         log.info("Entering post delete listener");
+        /*
+        handling hard deletes
+        * */
     }
 
     @Override
