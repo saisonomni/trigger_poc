@@ -63,9 +63,9 @@ public class HibernateUpsertUtility {
                                 returnTypeClass = method.getReturnType();
                             }
                             refIdList.add(tempEntity.toString());
-                            Collections.reverse(refIdList);
-                            upsertValueDTO.setRef(refIdList);
                         }
+                        Collections.reverse(refIdList);
+                        upsertValueDTO.setRef(refIdList);
                     }
                     upsertValueDTO.setPath(annotation.path());
                     upsertValueDTOList.add(upsertValueDTO);

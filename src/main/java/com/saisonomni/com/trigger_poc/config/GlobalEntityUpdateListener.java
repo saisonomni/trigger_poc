@@ -6,6 +6,7 @@ import com.saison.omni.ehs.EventConstants;
 import com.saison.omni.ehs.MessageCategory;
 import com.saisonomni.com.trigger_poc.CDCEntity;
 import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
+import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
 import com.saisonomni.com.trigger_poc.entity.UpsertValueDTO;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -57,10 +58,11 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
         List<Field> fieldList = Arrays.stream(entityClass.getDeclaredFields()).filter(field ->
                         field.isAnnotationPresent(PublishEventOnDelete.class))
                 .collect(Collectors.toList());
-        fieldList.stream().filter(field -> {
+        fieldList = fieldList.stream().filter(field -> {
             field.setAccessible(true);
             try {
-                return field.get(entity).toString().compareToIgnoreCase(field.getAnnotation(PublishEventOnDelete.class).deletedValue())==0;
+                return field.get(entity).toString().compareToIgnoreCase(field.getAnnotation(PublishEventOnDelete.class)
+                        .deletedValue())==0;
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
