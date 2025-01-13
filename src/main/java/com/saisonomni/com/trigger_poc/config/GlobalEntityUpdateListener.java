@@ -81,6 +81,7 @@ public class GlobalEntityUpdateListener implements MergeEventListener {
                     String path = annotation.ref()[i];
                     if(path.compareToIgnoreCase("#")==0){
                         Field idKey = entityClass.getDeclaredField(annotation.primaryKeyName());
+                        idKey.setAccessible(true);
                         refIdList.add(idKey.get(entity).toString());
                         upsertValueDTO.setRef(refIdList);
                         upsertValueDTO.setPath(annotation.path());
