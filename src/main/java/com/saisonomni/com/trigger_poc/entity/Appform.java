@@ -1,8 +1,9 @@
 package com.saisonomni.com.trigger_poc.entity;
 
-import com.saisonomni.com.trigger_poc.CDCEntity;
-import com.saisonomni.com.trigger_poc.PublishEventOnDelete;
-import com.saisonomni.com.trigger_poc.PublishEventOnUpsert;
+
+import com.saisonomni.searchly_client.cdcConfigs.annotations.CDCEntity;
+import com.saisonomni.searchly_client.cdcConfigs.annotations.PublishEventOnDelete;
+import com.saisonomni.searchly_client.cdcConfigs.annotations.PublishEventOnUpsert;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 

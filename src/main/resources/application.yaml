@@ -20,8 +20,8 @@ spring:
       database: omni
   datasource:
     enable: true
-    basePackages: com.saison.partner.data.postgres.repository
-    baseModel: com.saison.partner.data.postgres.entity
+    basePackages: com.saisonomni.com.trigger_poc.entity.repo
+    baseModel: com.saisonomni.com.trigger_poc.entity
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5436/mydb
     url: jdbc:postgresql://localhost:5436/mydb
@@ -31,6 +31,13 @@ spring:
     generate-ddl: true
     database: POSTGRESQL
     show-sql: true
+    hikari:
+      idle-timeout: 10000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      ddlAuto: none
+      showSql: true
+      schema: ${spring.application.name}
     hibernate:
       ddl-auto: create-drop
       default_schema: appform

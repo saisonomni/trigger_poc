@@ -68,25 +68,25 @@ public class CustomMongoEventListener extends AbstractMongoEventListener<Object>
                 }
             }
         }
-        sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
+//        sendEventUtility(jsonObject, MessageCategory.DIRECT,"kuch bhi","searchService.send","internal");
     }
-    public void sendEventUtility(Object object, MessageCategory category, String serviceName,
-                                 String eventType, String destination) {
-        try {
-            Gson gson = new Gson();
-            String eventUrl = "http://localhost:8088";
-            String applicationName = "trigger_poc";
-            EhsHelper ehsHelper = new EhsHelper(eventUrl, applicationName);
-            Map<String, Object> attributes = new HashMap<>(4);
-            attributes.put(EventConstants.EVENT_METADATA_EVENT_TYPE, eventType);
-            attributes.put(EventConstants.EVENT_METADATA_SOURCE,serviceName);
-            attributes.put(EventConstants.REG_METADATA_MESSAGE_TYPE,category);
-            attributes.put(EventConstants.PAYLOAD_METADATA_DESTINATION,destination);
-            log.info("sending event: {}, eventType: {}, destination: {}, eventUrl: {}", object, eventType, destination, eventUrl);
-            ehsHelper.sendEvent(gson.toJson(object),attributes);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
-            log.error(Arrays.toString(e.getStackTrace()));
-        }
-    }
+//    public void sendEventUtility(Object object, MessageCategory category, String serviceName,
+//                                 String eventType, String destination) {
+//        try {
+//            Gson gson = new Gson();
+//            String eventUrl = "http://localhost:8088";
+//            String applicationName = "trigger_poc";
+//            EhsHelper ehsHelper = new EhsHelper(eventUrl, applicationName);
+//            Map<String, Object> attributes = new HashMap<>(4);
+//            attributes.put(EventConstants.EVENT_METADATA_EVENT_TYPE, eventType);
+//            attributes.put(EventConstants.EVENT_METADATA_SOURCE,serviceName);
+//            attributes.put(EventConstants.REG_METADATA_MESSAGE_TYPE,category);
+//            attributes.put(EventConstants.PAYLOAD_METADATA_DESTINATION,destination);
+//            log.info("sending event: {}, eventType: {}, destination: {}, eventUrl: {}", object, eventType, destination, eventUrl);
+//            ehsHelper.sendEvent(gson.toJson(object),attributes);
+//        } catch (RuntimeException e) {
+//            log.error(e.getMessage());
+//            log.error(Arrays.toString(e.getStackTrace()));
+//        }
+//    }
 }

@@ -1,7 +1,6 @@
 package com.saisonomni.com.trigger_poc.controller;
 
 import com.saisonomni.com.trigger_poc.config.AppformMapper;
-import com.saisonomni.com.trigger_poc.config.EntityMapper;
 import com.saisonomni.com.trigger_poc.controller.request.AppformRequest;
 import com.saisonomni.com.trigger_poc.entity.Appform;
 import com.saisonomni.com.trigger_poc.entity.BREData;
@@ -9,8 +8,6 @@ import com.saisonomni.com.trigger_poc.service.AppformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 public class AppformController {
