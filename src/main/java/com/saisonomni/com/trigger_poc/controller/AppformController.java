@@ -2,8 +2,10 @@ package com.saisonomni.com.trigger_poc.controller;
 
 import com.saisonomni.com.trigger_poc.config.AppformMapper;
 import com.saisonomni.com.trigger_poc.controller.request.AppformRequest;
+import com.saisonomni.com.trigger_poc.controller.request.BorrowerDetailRequest;
 import com.saisonomni.com.trigger_poc.entity.Appform;
 import com.saisonomni.com.trigger_poc.entity.BREData;
+import com.saisonomni.com.trigger_poc.entity.EntityMapper;
 import com.saisonomni.com.trigger_poc.service.AppformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ public class AppformController {
     private AppformService appFormService;
     @Autowired
     private AppformMapper appformMapper;
+    @Autowired
+    private EntityMapper entityMapper;
     @PostMapping("/api/appforms")
     public ResponseEntity<Appform> createAppForm(@RequestBody AppformRequest appForm) {
         Appform savedAppForm = appFormService.createAppForm(appformMapper.toEntity(appForm));
@@ -39,6 +43,11 @@ public class AppformController {
     public ResponseEntity<String> deleteAppforms(@RequestParam String borrowerId,@RequestParam int cibil){
         appFormService.updateBorrower(borrowerId,cibil);
         return ResponseEntity.ok("Updated");
+    }
+    @PostMapping("/borrowerDetail")
+    public ResponseEntity<String> createBorrowerDetail(@RequestBody BorrowerDetailRequest borrowerDetailRequest){
+        String ret = appFormService.createBorrower(entityMapper.mapToBorrowerDetail(borrowerDetailRequest));
+        return ResponseEntity.ok(ret);
     }
 }
 

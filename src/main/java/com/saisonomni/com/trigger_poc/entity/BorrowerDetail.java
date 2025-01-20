@@ -22,7 +22,7 @@ public class BorrowerDetail {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @OneToOne(fetch = FetchType.EAGER, targetEntity = Coapplicant.class)
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = Coapplicant.class)
     @JoinColumn(name = "coapplicant_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
