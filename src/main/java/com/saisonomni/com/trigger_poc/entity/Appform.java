@@ -16,11 +16,17 @@ import static java.util.Objects.isNull;
 @Table(name = "appform")
 @Data
 @CDCEntity
+@PublishEventOnDelete(eventName = "cibilFilter",
+        keyName = "isDeleted",
+        deletedValue = "true",
+        primaryKeyName = "id",
+        path = "#",
+        ref = {"#"})
 public class Appform {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @PublishEventOnUpsert(eventName = "field_updated_event",
+    @PublishEventOnUpsert(eventName = "cibilFilter",
             keyName = "appformId",
             path = "#")
     private String id;
@@ -31,12 +37,6 @@ public class Appform {
     @Column(name = "sanctioned_amount", nullable = false)
     private int sanctionedAmount;
 
-    @PublishEventOnDelete(eventName = "field_updated_event",
-            keyName = "appformId",
-            deletedValue = "true",
-            primaryKeyName = "id",
-            path = "#",
-            ref = {"#"})
     @Column(name = "is_deleted",nullable = false)
     private boolean isDeleted;
 

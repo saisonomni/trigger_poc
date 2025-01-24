@@ -15,6 +15,12 @@ import javax.persistence.*;
 @Data
 @Table(name = "borrower_detail")
 @CDCEntity
+@PublishEventOnDelete(eventName = "cibilFilter",
+        keyName = "cibil",
+        primaryKeyName = "id",
+        ref = {"id","coapplicant.id","coapplicant.appform.id"},//values used here are the field names used in datastore
+        path = "appform.coapplicants^.borrowerDetail",//names used in refs are field name used in dto
+        deletedValue = "true")
 public class BorrowerDetail {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -29,19 +35,13 @@ public class BorrowerDetail {
     private Coapplicant coapplicant;
 
     @Column(name = "cibil", nullable = false)
-    @PublishEventOnUpsert(eventName = "field_updated_event",
+    @PublishEventOnUpsert(eventName = "cibilFilter",
             keyName = "cibil",
             path = "appform.coapplicants^.borrowerDetail.cibil",//values used here are the field names used in datastore
             ref = {"id","coapplicant.id","coapplicant.appform.id"})//names used in refs are field name used in dto
     private Integer cibil;
 
     @Column(name = "is_deleted", nullable = false)
-    @PublishEventOnDelete(eventName = "field_updated_event",
-            keyName = "cibil",
-            primaryKeyName = "id",
-            ref = {"id","coapplicant.id","coapplicant.appform.id"},//values used here are the field names used in datastore
-            path = "appform.coapplicants^.borrowerDetail",//names used in refs are field name used in dto
-            deletedValue = "true")
     private boolean is_deleted;
 
 }
