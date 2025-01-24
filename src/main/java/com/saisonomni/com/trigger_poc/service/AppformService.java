@@ -35,13 +35,13 @@ public class AppformService {
         return appFormRepository.save(appForm);
     }
     public String deleteApppform(String id){
-//        Optional<Appform> appform = appFormRepository.findById(id);
-//        appform.get().setDeleted(true);
-//        appform.get().getCoapplicants().forEach(coapplicant -> {
-//            coapplicant.getBorrowerDetail().set_deleted(true);
-//        });
-//        appFormRepository.save(appform.get());
-        appFormRepository.deleteById(id);
+        Optional<Appform> appform = appFormRepository.findById(id);
+        appform.get().setDeleted(true);
+        appform.get().getCoapplicants().forEach(coapplicant -> {
+            coapplicant.getBorrowerDetail().set_deleted(true);
+        });
+        appFormRepository.save(appform.get());
+//        appFormRepository.deleteById(id);
         return "Deleted";
     }
     public BREData createBREData(BREData breData) {
