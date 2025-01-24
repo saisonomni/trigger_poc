@@ -27,7 +27,8 @@ public class Appform {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @PublishEventOnUpsert(eventName = "cibilFilter",
-            keyName = "appformId",
+            primaryKey = "id",
+            keyName = "id",
             path = "#")
     private String id;
 

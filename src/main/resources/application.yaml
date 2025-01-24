@@ -16,8 +16,8 @@ spring:
       ddl-auto: update
   data:
     mongodb:
-      uri: mongodb://omni:omni@localhost:27018/?directConnection=true&authSource=omni
-      database: omni
+      uri: mongodb://searchly:searchly@localhost:27020/local?authSource=searchly
+      database: searchly
   datasource:
     enable: true
     basePackages: com.saisonomni.com.trigger_poc.entity.repo

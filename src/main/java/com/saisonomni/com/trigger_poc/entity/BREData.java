@@ -27,11 +27,15 @@ public class BREData {
     private String id;
     @Field("loan_applicant_id")
     @PublishEventOnUpsert(eventName = "cibilFilter",
-            keyName = "loanApplicantId",
+            keyName = "id",
+            primaryKey = "loanApplicantId",//which column will give the primary key of datastore
             path = "#")
     String loanApplicantId;
     @Field("success_percentage")
-    @PublishEventOnUpsert(eventName = "cibilFilter",keyName = "successPercentage",path = "#")
+    @PublishEventOnUpsert(eventName = "cibilFilter",
+            primaryKey = "loanApplicantId",
+            keyName = "successPercentage",
+            path = "#")
     double successPercentage;
     @Field("is_deleted")
     boolean is_deleted;

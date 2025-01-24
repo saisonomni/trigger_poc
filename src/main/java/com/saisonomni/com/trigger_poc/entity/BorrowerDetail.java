@@ -36,6 +36,7 @@ public class BorrowerDetail {
 
     @Column(name = "cibil", nullable = false)
     @PublishEventOnUpsert(eventName = "cibilFilter",
+            primaryKey = "NA",//primary key of the entity
             keyName = "cibil",
             path = "appform.coapplicants^.borrowerDetail.cibil",//values used here are the field names used in datastore
             ref = {"id","coapplicant.id","coapplicant.appform.id"})//names used in refs are field name used in dto
